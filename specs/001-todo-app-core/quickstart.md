@@ -99,3 +99,4 @@ curl -s -X PUT http://localhost:3000/api/items/<UUID> \
 curl -s -i -X DELETE http://localhost:3000/api/items/<UUID>
 ```
 - **예상 응답**: HTTP 200 OK (목록 조회 시 해당 항목 미포함)
+

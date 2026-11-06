@@ -86,3 +86,4 @@
     - `templates/secret.yaml`: DB 비밀번호 등 민감정보 보호
 - **근거 (Rationale)**:
   - 개발 환경(Docker Compose)과 운영/스테이징 환경(Kubernetes Helm) 간의 아키텍처 정합성을 유지.
+

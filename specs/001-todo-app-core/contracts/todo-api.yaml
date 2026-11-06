@@ -165,3 +165,4 @@ components:
         error:
           type: string
           example: "Item name cannot be empty or exceed 255 characters"
+
