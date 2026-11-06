@@ -1,0 +1,149 @@
+# ============================================================================
+# 요구사항 명세서 - Getting Started Todo App
+#
+# 이 프로젝트는 Node.js 애플리케이션입니다 (Express 백엔드 + React/Vite 클라이언트).
+# Python 코드가 포함되어 있지 않으므로, 이 파일은 사람이 읽을 수 있는 명세서이며
+# `pip install -r` 명령으로 사용하는 파일이 아닙니다.
+# 아래의 모든 줄은 pip가 아무것도 설치하지 않도록 의도적으로 주석 처리되어 있습니다.
+#
+# 실제 의존성 패키지는 npm을 통해 설치해야 합니다:
+#   백엔드  : cd backend && npm install
+#   클라이언트: cd client  && npm install
+#
+# 기재된 버전은 이 명세서가 작성될 당시 락 파일(package-lock.json)에서 확인된
+# 버전입니다. 선언된 버전 범위는 package.json에서 가져왔습니다.
+# ============================================================================
+
+# ----------------------------------------------------------------------------
+# 런타임 환경 (Runtime)
+# ----------------------------------------------------------------------------
+# Node.js 22 (Dockerfile 참조: FROM node:22)
+# npm (Node.js에 기본 내장)
+
+# ----------------------------------------------------------------------------
+# 백엔드 (Backend - backend/package.json)
+# ----------------------------------------------------------------------------
+# [런타임 의존성]
+#   express        ^5.1.0    (해결 버전 5.1.0)  HTTP 서버 및 REST API 라우팅 (/api/*)
+#   mysql2         ^3.14.1   (해결 버전 3.15.3) MySQL 드라이버 (MYSQL_HOST 설정 시 사용)
+#   sqlite3        ^5.1.7    (해결 버전 5.1.7)  SQLite 드라이버 (MYSQL_HOST 미설정 시 기본 저장소)
+#   uuid           ^11.1.0   (해결 버전 11.1.0) 신규 할 일 항목의 ID 생성 (UUID v4)
+#   wait-port      ^1.1.0    (해결 버전 1.1.0)  연결 전 MySQL 포트가 열릴 때까지 대기
+#
+# [개발 및 테스트 의존성]
+#   jest           ^29.7.0   (해결 버전 29.7.0) 단위 테스트 (backend/spec)
+#   nodemon        ^3.0.3    (해결 버전 3.1.11) 개발 중 서버 자동 재시작 (npm run dev)
+#   prettier       ^3.2.4    (해결 버전 3.6.2)  코드 포맷팅 (npm run format / format-check)
+#
+# [오버라이드]
+#   resolutions: @babel/core 7.23.9 (전이 의존성 버전 고정)
+
+# ----------------------------------------------------------------------------
+# 클라이언트 (Client - client/package.json)
+# ----------------------------------------------------------------------------
+# [런타임 의존성]
+#   react                    ^19.1.0   (해결 버전 19.2.0)  UI 라이브러리
+#   react-dom                ^19.1.0   (해결 버전 19.2.0)  React용 DOM 렌더러
+#   bootstrap                ^5.3.6    (해결 버전 5.3.8)   CSS 프레임워크
+#   react-bootstrap          ^2.10.10  (해결 버전 2.10.10) React용 Bootstrap 컴포넌트
+#   @fortawesome/fontawesome-svg-core       ^6.5.1   (해결 버전 6.7.2)  아이콘 코어 라이브러리
+#   @fortawesome/free-solid-svg-icons       ^6.5.1   (해결 버전 6.7.2)  솔리드 아이콘 (faTrash)
+#   @fortawesome/fontawesome-free-regular   ^5.0.13  (해결 버전 5.0.13) 레귤러 아이콘 (faSquare, faCheckSquare)
+#   @fortawesome/react-fontawesome          ^0.2.2   (해결 버전 0.2.6)  FontAwesome 아이콘용 React 래퍼
+#
+# [개발 의존성]
+#   vite                     ^6.3.5    (해결 버전 6.4.1)   개발 서버 및 프로덕션 번들러
+#   @vitejs/plugin-react     ^4.5.1    (해결 버전 4.7.0)   Vite용 React 지원 플러그인
+#   sass                     ^1.62.1   (해결 버전 1.62.1)  SCSS 컴파일러 (*.scss 파일)
+#   eslint                   ^8.55.0   (해결 버전 8.57.1)  코드 정적 검사 (npm run lint)
+#   eslint-plugin-react      ^7.33.2                       React 린트 규칙
+#   eslint-plugin-react-hooks ^4.6.0                       React Hooks 린트 규칙
+#   eslint-plugin-react-refresh ^0.4.5                     Fast Refresh 린트 규칙
+#   prettier                 ^3.2.4    (해결 버전 3.6.2)   코드 포맷팅
+#   @types/react             ^19.1.6                       React용 TypeScript 타입 정의
+#   @types/react-dom         ^19.1.6                       react-dom용 TypeScript 타입 정의
+#
+# [소스에서 사용되나 client/package.json 에 미선언된 항목]
+#   prop-types               (해결 버전 15.8.1)  src/components/*.jsx 에서 사용됨.
+#                                               현재 react-bootstrap의 전이 의존성으로만
+#                                               제공되므로, 명시적으로 선언하는 것을 권장.
+
+# ----------------------------------------------------------------------------
+# 인프라 (npm으로 설치하지 않으며, Docker / Compose로 제공됨)
+# ----------------------------------------------------------------------------
+#   Docker + Docker Compose   compose.yaml, Dockerfile
+#   MySQL 9.3                 데이터베이스 서비스 (mysql:9.3), Compose에서 사용
+#   Traefik v3.6              리버스 프록시 (traefik:v3.6)
+#   phpMyAdmin                데이터베이스 웹 UI (개발 환경 전용)
+#
+# 백엔드 환경 변수:
+#   MYSQL_HOST, MYSQL_USER, MYSQL_PASSWORD, MYSQL_DB (또는 *_FILE 변수)
+#   SQLITE_DB_LOCATION        (선택 사항, 기본값: /etc/todos/todo.db)
+#   NODE_ENV                  (최종 Docker 이미지에서는 production)
+
+# ============================================================================
+# 기능 설명 (Features)
+# ============================================================================
+#
+# 1. 할 일 목록 조회 (Todo list view)
+#    - 페이지 로드 시 GET /api/items 로 저장된 모든 할 일을 가져와 표시합니다.
+#    - 할 일이 하나도 없으면 "No items yet! Add one above!" 안내 문구를 보여줍니다.
+#    - 데이터를 불러오는 동안에는 "Loading..." 을 표시합니다.
+#    - 관련 코드: client/src/components/TodoListCard.jsx,
+#                 backend/src/routes/getItems.js
+#
+# 2. 할 일 추가 (Add item)
+#    - 상단 입력창에 이름을 입력하고 "Add Item" 버튼을 누르면 POST /api/items 로 전송됩니다.
+#    - 서버는 UUID v4 를 id 로 부여하고, completed 는 false 로 설정하여 저장합니다.
+#    - 입력창이 비어 있으면 버튼이 비활성화됩니다. 전송 중에는 "Adding..." 으로 바뀝니다.
+#    - 관련 코드: client/src/components/AddNewItemForm.jsx,
+#                 backend/src/routes/addItem.js
+#
+# 3. 완료 상태 토글 (Toggle completion)
+#    - 각 항목 왼쪽의 체크박스 아이콘을 누르면 PUT /api/items/:id 로
+#      completed 값이 반전되어 저장됩니다.
+#    - 완료된 항목은 "completed" 스타일(CSS 클래스)로 표시됩니다.
+#    - 관련 코드: client/src/components/ItemDisplay.jsx,
+#                 backend/src/routes/updateItem.js
+#
+# 4. 할 일 삭제 (Delete item)
+#    - 각 항목 오른쪽의 휴지통 아이콘을 누르면 DELETE /api/items/:id 로 삭제됩니다.
+#    - 관련 코드: client/src/components/ItemDisplay.jsx,
+#                 backend/src/routes/deleteItem.js
+#
+# 5. 인사말 표시 (Greeting banner)
+#    - 화면 상단에 GET /api/greeting 이 반환하는 "Hello world!" 제목을 표시합니다.
+#    - 프론트엔드와 백엔드가 연결되어 있는지 확인하는 용도의 예제 기능입니다.
+#    - 관련 코드: client/src/components/Greeting.jsx,
+#                 backend/src/routes/getGreeting.js
+#
+# 6. 데이터 저장소 선택 (Persistence)
+#    - MYSQL_HOST 환경 변수가 있으면 MySQL 에 저장합니다 (mysql2 사용).
+#      서버 시작 시 todo_items 테이블을 자동 생성하고, DB 가 준비될 때까지 기다립니다.
+#    - MYSQL_HOST 가 없으면 SQLite 파일에 저장합니다 (기본 경로 /etc/todos/todo.db,
+#      SQLITE_DB_LOCATION 으로 변경 가능). 디렉터리가 없으면 자동으로 만듭니다.
+#    - 관련 코드: backend/src/persistence/index.js, mysql.js, sqlite.js
+#
+# 7. 서버 종료 처리 (Graceful shutdown)
+#    - SIGINT / SIGTERM / SIGUSR2(nodemon) 신호를 받으면 DB 연결을 닫고 종료합니다.
+#    - 관련 코드: backend/src/index.js
+#
+# ----------------------------------------------------------------------------
+# REST API 요약 (Summary of endpoints)
+# ----------------------------------------------------------------------------
+#   GET    /api/greeting      -> { greeting: "Hello world!" }
+#   GET    /api/items         -> [ { id, name, completed }, ... ]
+#   POST   /api/items         body: { name }          -> 생성된 항목 { id, name, completed:false }
+#   PUT    /api/items/:id     body: { name, completed } -> 수정된 항목
+#   DELETE /api/items/:id     -> 200 OK
+#
+# ----------------------------------------------------------------------------
+# 기타 (Other behavior)
+# ----------------------------------------------------------------------------
+#   - 백엔드는 포트 3000 에서 실행되며, 빌드된 클라이언트 파일을 /static 에서 함께 제공합니다.
+#   - 개발 환경(compose.yaml)에서는 Traefik 프록시가 http://localhost 의 /api 요청은
+#     백엔드로, 나머지 요청은 Vite 개발 서버(포트 5173)로 전달합니다.
+#   - phpMyAdmin 은 http://db.localhost 에서 MySQL 데이터를 직접 확인할 수 있게 합니다 (개발용).
+#   - 현재 기능 범위: 로그인/사용자 구분 없음, 할 일 수정(이름 변경) UI 없음
+#     (API 는 name 수정을 지원하지만 화면에는 노출되지 않음).
+
