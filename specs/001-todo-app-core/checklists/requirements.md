@@ -32,3 +32,4 @@
 ## Notes
 
 - All quality checks passed. The specification is complete, technology-agnostic, and ready for planning (`/speckit-plan`).
+
