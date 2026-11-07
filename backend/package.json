@@ -1,0 +1,22 @@
+{
+  "name": "todo-app-backend",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Todo App REST API and authentication service",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "test": "node --test spec/routes/*.spec.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "mysql2": "^3.14.1",
+    "sqlite3": "^5.1.7"
+  },
+  "devDependencies": {
+    "supertest": "^7.1.1"
+  }
+}
